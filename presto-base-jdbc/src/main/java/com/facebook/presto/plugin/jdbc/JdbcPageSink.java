@@ -30,6 +30,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -46,6 +47,7 @@ import static com.facebook.presto.spi.type.DoubleType.DOUBLE;
 import static com.facebook.presto.spi.type.IntegerType.INTEGER;
 import static com.facebook.presto.spi.type.RealType.REAL;
 import static com.facebook.presto.spi.type.SmallintType.SMALLINT;
+import static com.facebook.presto.spi.type.TimestampType.TIMESTAMP;
 import static com.facebook.presto.spi.type.TinyintType.TINYINT;
 import static com.facebook.presto.spi.type.VarbinaryType.VARBINARY;
 import static com.facebook.presto.spi.type.Varchars.isVarcharType;
@@ -152,6 +154,9 @@ public class JdbcPageSink
         }
         else if (VARBINARY.equals(type)) {
             statement.setBytes(parameter, type.getSlice(block, position).getBytes());
+        }
+        else if (TIMESTAMP.equals(type)) {
+            statement.setTimestamp(parameter, new Timestamp(type.getLong(block, position)));
         }
         else if (DATE.equals(type)) {
             // convert to midnight in default time zone

@@ -210,6 +210,7 @@ public final class StandardReadMappings
                 return Optional.of(charReadMapping(createCharType(charLength)));
 
             case Types.VARCHAR:
+            case Types.OTHER:
             case Types.NVARCHAR:
             case Types.LONGVARCHAR:
             case Types.LONGNVARCHAR:
