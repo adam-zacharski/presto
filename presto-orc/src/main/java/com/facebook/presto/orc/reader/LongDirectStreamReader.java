@@ -24,6 +24,7 @@ import com.facebook.presto.orc.stream.LongInputStream;
 import com.facebook.presto.spi.block.Block;
 import com.facebook.presto.spi.block.BlockBuilder;
 import com.facebook.presto.spi.type.Type;
+import com.facebook.presto.spi.type.VarcharType;
 import org.openjdk.jol.info.ClassLayout;
 
 import javax.annotation.Nullable;
@@ -108,7 +109,12 @@ public class LongDirectStreamReader
             for (int i = 0; i < nextBatchSize; i++) {
                 if (presentStream.nextBit()) {
                     verify(dataStream != null);
-                    type.writeLong(builder, dataStream.next());
+                    if (type instanceof VarcharType) {
+                        ((VarcharType) type).writeString(builder, String.valueOf(dataStream.next()));
+                    }
+                    else {
+                        type.writeLong(builder, dataStream.next());
+                    }
                 }
                 else {
                     builder.appendNull();
